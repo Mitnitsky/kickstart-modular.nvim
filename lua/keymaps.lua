@@ -51,4 +51,32 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+vim.keymap.set('n', 'J', 'mzJ`z')
+vim.keymap.set('x', '<leader>p', [["_dP]])
+-- next greatest remap ever : asbjornHaland
+vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
+vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
+vim.keymap.set('n', '<leader>Y', [["+Y]])
+vim.keymap.set('n', 'Q', '<nop>')
+vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz')
+vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
+vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
+vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { desc = 'Make the current file executable', silent = true })
+vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/init.lua<CR>')
+vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
+vim.keymap.set('i', 'jk', '<ESC>')
+vim.keymap.set({ 'n' }, '<leader>ts', function()
+  require('lsp_signature').toggle_float_win()
+end, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
+vim.keymap.set('n', ',m', function()
+  vim.cmd ':%s/\r//g'
+end)
+
 -- vim: ts=2 sts=2 sw=2 et
