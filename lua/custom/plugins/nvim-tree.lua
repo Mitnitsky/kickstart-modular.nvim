@@ -33,7 +33,7 @@ return {
         end
       end
       -- custom mappings
-      vim.keymap.set('n', '<leader>te', safe_toggle, { file_path = true,desc = '[T]oggle file [E]xplorer' })
+      vim.keymap.set('n', '<leader>te', safe_toggle, { desc = '[T]oggle file [E]xplorer' })
       vim.keymap.set('n', '<C-t>', api.tree.change_root_to_parent, opts 'Up')
       vim.keymap.set('n', '?', api.tree.toggle_help, opts 'Help')
       -- vim.keymap.set('n', '<leader>te', api.tree.toggle, { desc = '[T]oggle file [E]xplorer' })
