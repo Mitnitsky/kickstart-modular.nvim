@@ -6,8 +6,49 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- ...existing code...
+-- ...existing code...
+vim.keymap.set('n', '<Leader>tq', function()
+  -- Check if quickfix window is already open
+  local qf_open = false
+  for _, win in pairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local buf_type = vim.api.nvim_buf_get_option(buf, 'buftype')
+    if buf_type == 'quickfix' then
+      qf_open = true
+      break
+    end
+  end
 
+  if qf_open then
+    vim.cmd.cclose()
+  else
+    -- Populate quickfix with diagnostics if empty
+    if #vim.fn.getqflist() == 0 then
+      vim.diagnostic.setqflist({
+        format = function(diagnostic)
+          local message = diagnostic.message
+          if diagnostic.source then
+            message = string.format("[%s] %s", diagnostic.source, message)
+          end
+          return {
+            bufnr = diagnostic.bufnr,
+            lnum = diagnostic.lnum + 1,
+            col = diagnostic.col + 1,
+            text = message,
+            type = ({ "E", "W", "I", "H" })[diagnostic.severity] or "E"
+          }
+        end
+      })
+    end
+    vim.cmd.copen()
+    -- Remove these two lines to keep focus on the quickfix window
+    -- local current_win = vim.api.nvim_get_current_win()
+    -- vim.cmd.wincmd('p') -- Go back to previous window
+  end
+end, { desc = '[T]oggle [Q]uickfix list' })
+-- ...existing code...
+-- ...existing code...
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.

@@ -106,4 +106,3 @@ local server_config = {
   --on_attach = require("my.attach").func,
   --capabilities = my_caps_table_or_func
 }
-require('ccls').setup { lsp = { lspconfig = server_config } }

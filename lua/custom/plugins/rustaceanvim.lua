@@ -32,7 +32,7 @@ return {
                 'aarch64-unknown-linux-gnu',
               },
               extraEnv = {
-                TARGET_SOC = '10.33.17.6',
+                TARGET_SOC = '10.33.17.10',
               },
             },
             check = {
