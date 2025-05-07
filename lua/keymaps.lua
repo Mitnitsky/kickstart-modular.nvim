@@ -25,21 +25,21 @@ vim.keymap.set('n', '<Leader>tq', function()
   else
     -- Populate quickfix with diagnostics if empty
     if #vim.fn.getqflist() == 0 then
-      vim.diagnostic.setqflist({
+      vim.diagnostic.setqflist {
         format = function(diagnostic)
           local message = diagnostic.message
           if diagnostic.source then
-            message = string.format("[%s] %s", diagnostic.source, message)
+            message = string.format('[%s] %s', diagnostic.source, message)
           end
           return {
             bufnr = diagnostic.bufnr,
             lnum = diagnostic.lnum + 1,
             col = diagnostic.col + 1,
             text = message,
-            type = ({ "E", "W", "I", "H" })[diagnostic.severity] or "E"
+            type = ({ 'E', 'W', 'I', 'H' })[diagnostic.severity] or 'E',
           }
-        end
-      })
+        end,
+      }
     end
     vim.cmd.copen()
     -- Remove these two lines to keep focus on the quickfix window
@@ -104,10 +104,10 @@ vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
 vim.keymap.set('n', 'Q', '<nop>')
-vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz')
-vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
-vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
+vim.keymap.set('n', '<leader>k', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zz')
+-- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
+-- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
 vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { desc = 'Make the current file executable', silent = true })
 vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>')
@@ -119,5 +119,6 @@ end, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
 vim.keymap.set('n', ',m', function()
   vim.cmd ':%s/\r//g'
 end)
-
+vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F] [S]ave', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fq', ':q<CR>', { desc = '[F] close', noremap = true, silent = true })
 -- vim: ts=2 sts=2 sw=2 et
