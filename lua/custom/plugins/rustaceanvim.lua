@@ -11,7 +11,7 @@ return {
       },
       -- LSP configuration
       server = {
-        on_attach = function(client, bufnr)
+        on_attach = function(_, _)
           -- you can also put keymaps in here
         end,
         default_settings = {
@@ -36,7 +36,7 @@ return {
               },
             },
             check = {
-              command = 'clippy',
+              command = 'cargo clippy -- -D warnings',
             },
           },
         },

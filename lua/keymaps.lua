@@ -121,4 +121,5 @@ vim.keymap.set('n', ',m', function()
 end)
 vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F] [S]ave', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>fq', ':q<CR>', { desc = '[F] close', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fr', '<cmd>!./%<CR>', { desc = '[F] run', noremap = true, silent = true })
 -- vim: ts=2 sts=2 sw=2 et
