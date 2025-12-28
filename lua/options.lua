@@ -25,7 +25,14 @@ end)
 
 -- Enable break indent
 vim.opt.breakindent = true
-
+vim.cmd [[function! IndentWithI()
+    if len(getline('.')) == 0
+        return "\"_cc"
+    else
+        return "i"
+    endif
+endfunction
+nnoremap <expr> i IndentWithI()]]
 -- Save undo history
 vim.opt.undofile = true
 
@@ -87,4 +94,3 @@ vim.g.loaded_netrwPlugin = 1
 
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
-
