@@ -3,13 +3,18 @@ return {
   dependencies = {
     'neovim/nvim-lspconfig',
   },
+  ft = { 'c', 'cpp', 'objc', 'objcpp', 'opencl' },
   config = function()
-    local lspconfig = require 'lspconfig'
+    local util = require 'lspconfig.util'
 
-    lspconfig.ccls.setup {
+    -- Configure ccls using the new Neovim 0.11 API
+    vim.lsp.config('ccls', {
+      cmd = { 'ccls' },
+      filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'opencl' },
+      root_dir = util.root_pattern('.git', 'compile_commands.json', 'compile_flags.txt'),
       init_options = {
         cache = {
-          directory = '/tmp/ccls-cache',
+          directory = vim.fs.normalize '~/.cache/ccls/',
         },
         compilationDatabaseDirectory = 'src/build',
         index = {
@@ -41,23 +46,13 @@ return {
           detailedLabel = true,
         },
       },
-      filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
       capabilities = require('blink.cmp').get_lsp_capabilities(),
       on_attach = function(client, bufnr)
         -- Optional: Add key mappings or other setup here
       end,
-      root_dir = function(fname)
-        -- Find project root (parent directory of the src/ folder)
-        local root = lspconfig.util.root_pattern('.git', 'compile_commands.json')(fname)
+    })
 
-        -- If we found a root but compile_commands.json is in src/build,
-        -- ensure we're using the actual project root
-        if root and vim.fn.filereadable(root .. '/src/build/compile_commands.json') == 1 then
-          return root
-        end
-
-        return lspconfig.util.find_git_ancestor(fname)
-      end,
-    }
+    -- Enable ccls for the specified filetypes
+    vim.lsp.enable 'ccls'
   end,
 }

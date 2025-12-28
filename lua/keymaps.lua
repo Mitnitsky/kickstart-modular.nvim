@@ -13,7 +13,7 @@ vim.keymap.set('n', '<Leader>tq', function()
   local qf_open = false
   for _, win in pairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
-    local buf_type = vim.api.nvim_buf_get_option(buf, 'buftype')
+    local buf_type = vim.bo[buf].buftype
     if buf_type == 'quickfix' then
       qf_open = true
       break
@@ -119,6 +119,18 @@ end, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
 vim.keymap.set('n', ',m', function()
   vim.cmd ':%s/\r//g'
 end)
+vim.keymap.set('n', '<leader>gb', function()
+  require('fzf-lua').git_bcommits()
+end, { noremap = true, silent = true, desc = 'Git FZF (B)commits' })
+vim.keymap.set('n', '<leader>gs', function()
+  require('fzf-lua').git_status()
+end, { noremap = true, silent = true, desc = 'Git FZF (S)tatus' })
+-- Move selected line(s) down
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
+
+-- Move selected line(s) up
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
+
 vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F] [S]ave', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>fq', ':q<CR>', { desc = '[F] close', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>fr', '<cmd>!./%<CR>', { desc = '[F] run', noremap = true, silent = true })
