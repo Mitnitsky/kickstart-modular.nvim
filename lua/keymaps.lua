@@ -91,7 +91,26 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+table.unpack = table.unpack or unpack
+function GetVisual()
+  local _, ls, cs = table.unpack(vim.fn.getpos 'v')
+  local _, le, ce = table.unpack(vim.fn.getpos '.')
 
+  -- normalize backward selection
+  if ls > le or (ls == le and cs > ce) then
+    ls, le = le, ls
+    cs, ce = ce, cs
+  end
+
+  return vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
+end
+vim.keymap.set('v', '<C-r>', function()
+  local pattern = table.concat(GetVisual())
+  -- escape regex and line endings
+  pattern = vim.fn.substitute(vim.fn.escape(pattern, '^$.*\\/~[]'), '\n', '\\n', 'g')
+  -- send parsed substitution command to command line
+  vim.api.nvim_input('<Esc>:%s/' .. pattern .. '//<Left>')
+end)
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
@@ -108,10 +127,10 @@ vim.keymap.set('n', '<leader>k', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zz')
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 -- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
-vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+-- vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { desc = 'Make the current file executable', silent = true })
 vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>')
--- vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
+vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
 vim.keymap.set({ 'n' }, '<leader>ts', function()
   require('lsp_signature').toggle_float_win()
