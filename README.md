@@ -4,6 +4,8 @@
 
 *This is a fork of [nvim-lua/kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) that moves from a single file to a multi file configuration.*
 
+**Key Change:** This fork uses [blink.cmp](https://github.com/saghen/blink.cmp) as the completion engine instead of nvim-cmp, providing faster and more modern autocompletion.
+
 A starting point for Neovim that is:
 
 * Small
@@ -14,12 +16,16 @@ A starting point for Neovim that is:
 
 ## Installation
 
-### Install Neovim
+### Prerequisites
+
+#### Install Neovim
 
 Kickstart.nvim targets *only* the latest
 ['stable'](https://github.com/neovim/neovim/releases/tag/stable) and latest
 ['nightly'](https://github.com/neovim/neovim/releases/tag/nightly) of Neovim.
 If you are experiencing issues, please make sure you have the latest versions.
+
+**Minimum Required Version:** Neovim 0.9.0 or higher
 
 ### Install External Dependencies
 
@@ -70,12 +76,12 @@ too - it's ignored in the kickstart repo to make maintenance easier, but it's
 
 > [!NOTE]
 > If following the recommended step above (i.e., forking the repo), replace
-> `dam9000` with `<your_github_username>` in the commands below
+> `Mitnitsky` with `<your_github_username>` in the commands below
 
 <details><summary> Linux and Mac </summary>
 
 ```sh
-git clone https://github.com/dam9000/kickstart-modular.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+git clone https://github.com/Mitnitsky/kickstart-modular.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
 ```
 
 </details>
@@ -85,13 +91,13 @@ git clone https://github.com/dam9000/kickstart-modular.nvim.git "${XDG_CONFIG_HO
 If you're using `cmd.exe`:
 
 ```
-git clone https://github.com/dam9000/kickstart.nvim.git "%localappdata%\nvim"
+git clone https://github.com/Mitnitsky/kickstart-modular.nvim.git "%localappdata%\nvim"
 ```
 
 If you're using `powershell.exe`
 
 ```
-git clone https://github.com/dam9000/kickstart.nvim.git "${env:LOCALAPPDATA}\nvim"
+git clone https://github.com/Mitnitsky/kickstart-modular.nvim.git "${env:LOCALAPPDATA}\nvim"
 ```
 
 </details>
@@ -106,6 +112,25 @@ nvim
 
 That's it! Lazy will install all the plugins you have. Use `:Lazy` to view
 the current plugin status. Hit `q` to close the window.
+
+> [!NOTE]
+> On first launch, Neovim will download and install all plugins. This may take a minute.
+> The completion engine (blink.cmp) may also download a binary on first use for optimal performance.
+
+#### Completion Engine: blink.cmp
+
+This configuration uses [blink.cmp](https://github.com/saghen/blink.cmp) as the completion engine, which offers:
+- **Faster performance** compared to nvim-cmp
+- **Rust-based fuzzy matching** (optional, falls back to Lua implementation)
+- **Modern architecture** with better integration
+
+Default keymaps:
+- `<C-y>` to accept completion
+- `<C-n>`/`<C-p>` or `<Up>`/`<Down>` to select items
+- `<C-Space>` to show documentation
+- `<Tab>`/`<S-Tab>` to navigate snippet placeholders
+
+See `:help blink-cmp` for more information.
 
 #### Read The Friendly Documentation
 
@@ -146,7 +171,7 @@ examples of adding popularly requested plugins.
     As you progress in learning Neovim and Lua, you might consider splitting `init.lua`
     into smaller parts. A fork of kickstart that does this while maintaining the
     same functionality is available here:
-    * [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim)
+    * [kickstart-modular.nvim](https://github.com/Mitnitsky/kickstart-modular.nvim)
   * *NOTE: This is the fork that splits the configuration into smaller parts.*
     The original repo with the single `init.lua` file is available here:
     * [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
