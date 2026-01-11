@@ -226,7 +226,7 @@ The following plugins are included in the repository and commented out in `lua/l
 - **autopairs** (`lua/kickstart/plugins/autopairs.lua`) - Automatically inserts matching brackets and quotes
 
 > [!NOTE]
-> The `lua/lazy-plugins.lua` file may reference other plugins (like neo-tree) that are not included in this repository. Only enable plugins that have corresponding files in `lua/kickstart/plugins/`.
+> The `lua/lazy-plugins.lua` file may reference other plugins (like neo-tree) that are not included in this repository. Only enable plugins that have corresponding files in `lua/kickstart/plugins/`. You can check which plugins are available by viewing the files in that directory.
 
 Example - to enable the debug plugin, edit `lua/lazy-plugins.lua`:
 ```lua
