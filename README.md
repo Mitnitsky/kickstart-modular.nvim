@@ -12,6 +12,27 @@ A starting point for Neovim that is:
 
 **NOT** a Neovim distribution, but instead a starting point for your configuration.
 
+## Quick Reference
+
+**Essential Prerequisites:**
+- Neovim >= 0.10 (stable or nightly)
+- `git`, `make`, `unzip`, C Compiler (`gcc` or `clang`)
+- `ripgrep` - For telescope live grep
+- (Optional) A [Nerd Font](https://www.nerdfonts.com/) for icons
+
+**First Steps After Installation:**
+1. Launch Neovim: `nvim`
+2. Wait for plugins to install automatically
+3. Restart Neovim
+4. Run `:checkhealth` to verify installation
+5. Run `:Tutor` to learn Neovim basics
+
+**Key Commands:**
+- `:Lazy` - Manage plugins
+- `:Mason` - Install LSP servers, formatters, linters
+- `:checkhealth` - Diagnose issues
+- `<space>sh` - Search help documentation
+
 ## Installation
 
 ### Install Neovim
@@ -120,6 +141,152 @@ examples of adding popularly requested plugins.
 ### Getting Started
 
 [The Only Video You Need to Get Started with Neovim](https://youtu.be/m8C0Cq9Uv9o)
+
+## Plugins Overview
+
+This configuration includes several carefully selected plugins that provide a powerful development experience. Below is an overview of the main plugins and their purposes:
+
+### Core Plugins (Enabled by Default)
+
+#### Plugin Manager
+- **[lazy.nvim](https://github.com/folke/lazy.nvim)** - Fast and modern plugin manager that automatically installs and manages all plugins
+
+#### LSP (Language Server Protocol)
+- **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - Quickstart configurations for Neovim's built-in LSP client
+- **[mason.nvim](https://github.com/mason-org/mason.nvim)** - Portable package manager for LSP servers, formatters, and linters
+- **[mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim)** - Bridges mason.nvim with lspconfig
+- **[mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim)** - Automatically installs LSP servers and tools
+- **[fidget.nvim](https://github.com/j-hui/fidget.nvim)** - Shows LSP progress notifications
+- **[lazydev.nvim](https://github.com/folke/lazydev.nvim)** - Configures Lua LSP for Neovim config development
+
+**Prerequisites for LSP:**
+- Language servers are automatically installed via Mason for configured languages (Lua, Bash, Clangd)
+- For additional languages, you may need to install language-specific tools:
+  - **TypeScript/JavaScript**: Node.js and npm
+  - **Python**: Python 3 and pip
+  - **Go**: Go compiler
+  - **C/C++**: Clang or GCC compiler
+
+#### Autocompletion
+- **[blink.cmp](https://github.com/saghen/blink.cmp)** - Fast and feature-rich autocompletion plugin
+- **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine for expanding code snippets
+
+**Prerequisites for blink.cmp:**
+- Optional: Rust compiler for faster fuzzy matching (configuration uses Lua implementation by default)
+- `make` for building LuaSnip's regex support (Windows users may need to disable this)
+
+#### Fuzzy Finder
+- **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Highly extendable fuzzy finder for files, buffers, LSP symbols, and more
+- **[telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim)** - FZF sorter for telescope (faster sorting)
+- **[plenary.nvim](https://github.com/nvim-lua/plenary.nvim)** - Lua utility functions (dependency for telescope)
+
+**Prerequisites for Telescope:**
+- `ripgrep` - Required for live grep functionality
+- `fd` (optional) - For faster file finding
+- `make` - Required to build telescope-fzf-native
+
+#### Syntax Highlighting
+- **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)** - Advanced syntax highlighting and code parsing
+
+**Prerequisites for Treesitter:**
+- C compiler (gcc/clang) - Required to compile treesitter parsers
+- `git` - Required to download parsers
+
+#### Formatting
+- **[conform.nvim](https://github.com/stevearc/conform.nvim)** - Lightweight and fast code formatter
+- **stylua** - Lua formatter (automatically installed via Mason)
+
+**Prerequisites for conform:**
+- Language-specific formatters can be installed via Mason or manually:
+  - **Python**: `black`, `isort`
+  - **JavaScript/TypeScript**: `prettier`, `prettierd`
+  - **Go**: `gofmt`, `goimports`
+
+#### Git Integration
+- **[gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)** - Git integration showing changes in the sign column
+
+**Prerequisites for gitsigns:**
+- `git` - Required for git functionality
+
+#### UI Enhancements
+- **[which-key.nvim](https://github.com/folke/which-key.nvim)** - Displays available keybindings in a popup
+- **[todo-comments.nvim](https://github.com/folke/todo-comments.nvim)** - Highlights TODO, FIXME, and other comments
+- **[mini.nvim](https://github.com/echasnovski/mini.nvim)** - Collection of minimal, independent plugins
+
+#### Other Plugins
+- **[vim-sleuth](https://github.com/tpope/vim-sleuth)** - Automatically detects indentation settings
+
+### Optional Plugins (Disabled by Default)
+
+The following plugins are included but commented out. Uncomment them in `lua/lazy-plugins.lua` to enable:
+
+- **debug** - DAP (Debug Adapter Protocol) integration for debugging
+- **indent_line** - Shows indent guides
+- **lint** - Asynchronous linting
+- **autopairs** - Automatically inserts matching brackets and quotes
+- **neo-tree** - File explorer sidebar
+
+To enable optional plugins, edit `lua/lazy-plugins.lua` and uncomment the desired plugin line:
+```lua
+require 'kickstart.plugins.debug',
+require 'kickstart.plugins.indent_line',
+-- etc.
+```
+
+### Custom Plugins
+
+You can add your own plugins by creating files in `lua/custom/plugins/`. Each file should return a plugin specification. The configuration automatically imports all plugins from this directory.
+
+Example (`lua/custom/plugins/my-plugin.lua`):
+```lua
+return {
+  'author/plugin-name',
+  config = function()
+    -- Plugin configuration
+  end,
+}
+```
+
+## Mason Setup
+
+Mason is used to automatically install and manage LSP servers, formatters, and linters. After the first launch:
+
+1. Open Mason with `:Mason`
+2. Press `g?` to see help
+3. Navigate with `j`/`k`, install with `i`, uninstall with `X`
+
+Currently configured language servers:
+- `lua_ls` - Lua language server
+- `bashls` - Bash language server
+- `clangd` - C/C++ language server
+
+To add more language servers, edit `lua/kickstart/plugins/lspconfig.lua` and add entries to the `servers` table.
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue**: Plugins not installing
+- **Solution**: Run `:Lazy sync` to synchronize plugins
+
+**Issue**: LSP not working
+- **Solution**: Run `:Mason` to check if the language server is installed
+- **Solution**: Run `:checkhealth` to diagnose LSP issues
+
+**Issue**: Treesitter parsers failing to compile
+- **Solution**: Ensure you have a C compiler installed (gcc/clang)
+- **Solution**: Run `:checkhealth nvim-treesitter` for detailed diagnostics
+
+**Issue**: Telescope grep not working
+- **Solution**: Install `ripgrep` (see External Dependencies section)
+
+**Issue**: Icons not displaying correctly
+- **Solution**: Install a [Nerd Font](https://www.nerdfonts.com/) and set `vim.g.have_nerd_font = true` in `init.lua`
+
+**Issue**: Build errors on Windows
+- **Solution**: See [Windows Installation](#windows-installation) for platform-specific build tools
+
+For more detailed diagnostics, run `:checkhealth` in Neovim.
 
 ### FAQ
 
