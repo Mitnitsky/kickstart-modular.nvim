@@ -218,19 +218,20 @@ This configuration includes several carefully selected plugins that provide a po
 
 ### Optional Plugins (Disabled by Default)
 
-The following plugins are included but commented out. Uncomment them in `lua/lazy-plugins.lua` to enable:
+The following plugins are included but commented out. To enable them, edit `lua/lazy-plugins.lua` and uncomment the desired plugin line:
 
-- **debug** - DAP (Debug Adapter Protocol) integration for debugging
-- **indent_line** - Shows indent guides
-- **lint** - Asynchronous linting
-- **autopairs** - Automatically inserts matching brackets and quotes
-- **neo-tree** - File explorer sidebar
+- **debug** (`lua/kickstart/plugins/debug.lua`) - DAP (Debug Adapter Protocol) integration for debugging
+- **indent_line** (`lua/kickstart/plugins/indent_line.lua`) - Shows indent guides
+- **lint** (`lua/kickstart/plugins/lint.lua`) - Asynchronous linting
+- **autopairs** (`lua/kickstart/plugins/autopairs.lua`) - Automatically inserts matching brackets and quotes
 
-To enable optional plugins, edit `lua/lazy-plugins.lua` and uncomment the desired plugin line:
+Example - to enable the debug plugin, edit `lua/lazy-plugins.lua`:
 ```lua
+-- Change this:
+-- require 'kickstart.plugins.debug',
+
+-- To this:
 require 'kickstart.plugins.debug',
-require 'kickstart.plugins.indent_line',
--- etc.
 ```
 
 ### Custom Plugins
