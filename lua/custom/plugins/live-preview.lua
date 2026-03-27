@@ -1,10 +1,12 @@
 return {
-  'brianhuster/live-preview.nvim',
-  dependencies = {
-    -- You can choose one of the following pickers
-    'nvim-telescope/telescope.nvim',
-    'ibhagwan/fzf-lua',
-    'echasnovski/mini.pick',
-    'folke/snacks.nvim',
-  },
+  'selimacerbas/markdown-preview.nvim',
+  dependencies = { 'selimacerbas/live-server.nvim' },
+  config = function()
+    require('markdown_preview').setup {
+      -- all optional; sane defaults shown
+      port = 8421,
+      open_browser = false,
+      debounce_ms = 300,
+    }
+  end,
 }

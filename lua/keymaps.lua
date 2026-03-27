@@ -128,7 +128,7 @@ vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zz')
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 -- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
 -- vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { desc = 'Make the current file executable', silent = true })
+vim.keymap.set('n', '<leader>tx', '<cmd>!chmod +x %<CR>', { desc = '[T]oggle the current file executable', silent = true })
 vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>')
 vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
@@ -153,4 +153,126 @@ vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
 vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F] [S]ave', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>fq', ':q<CR>', { desc = '[F] close', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>fr', '<cmd>!./%<CR>', { desc = '[F] run', noremap = true, silent = true })
+
+-- Copy number under cursor as hexadecimal
+vim.keymap.set('n', '<leader>ch', function()
+  -- Get the word under cursor
+  local word = vim.fn.expand('<cword>')
+  
+  -- Try to convert to number
+  local num = tonumber(word)
+  
+  if num then
+    -- Convert to hexadecimal (uppercase)
+    local hex = string.format('0x%x', num)
+    
+    -- Copy to clipboard
+    vim.fn.setreg('+', hex)
+    vim.fn.setreg('"', hex)
+    
+    vim.notify('Copied: ' .. word .. ' → ' .. hex, vim.log.levels.INFO)
+  else
+    vim.notify('Not a valid number: ' .. word, vim.log.levels.WARN)
+  end
+end, { desc = '[C]opy as [H]ex', noremap = true, silent = true })
+
+-- Log trimming shortcuts
+-- Trim N bracket groups from all lines in buffer
+local function trim_log_brackets_buffer(n)
+  -- Save cursor position
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  
+  -- Get all lines in buffer
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  
+  -- Process each line
+  for i, line in ipairs(lines) do
+    -- Only process lines that start with a bracket
+    if line:match('^%[') then
+      local result = line
+      for j = 1, n do
+        result = result:gsub('^%[.-%]%s*', '', 1)
+      end
+      lines[i] = result
+    end
+    -- Skip lines without brackets (leave them unchanged)
+  end
+  
+  -- Replace all lines in buffer
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  
+  -- Restore cursor position
+  pcall(vim.api.nvim_win_set_cursor, 0, cursor_pos)
+end
+
+-- <leader>l1: Trim 1 bracket from all lines (show unit + message)
+vim.keymap.set('n', '<leader>l1', function()
+  trim_log_brackets_buffer(1)
+  vim.notify('Trimmed 1 bracket from all lines', vim.log.levels.INFO)
+end, { desc = '[L]og trim [1] bracket from buffer (keep unit + message)', noremap = true, silent = true })
+
+-- <leader>l2: Trim 2 brackets from all lines (show only message)
+vim.keymap.set('n', '<leader>l2', function()
+  trim_log_brackets_buffer(2)
+  vim.notify('Trimmed 2 brackets from all lines', vim.log.levels.INFO)
+end, { desc = '[L]og trim [2] brackets from buffer (only message)', noremap = true, silent = true })
+
+-- <leader>l3: Trim 3 brackets from all lines
+vim.keymap.set('n', '<leader>l3', function()
+  trim_log_brackets_buffer(3)
+  vim.notify('Trimmed 3 brackets from all lines', vim.log.levels.INFO)
+end, { desc = '[L]og trim [3] brackets from buffer', noremap = true, silent = true })
+
 -- vim: ts=2 sts=2 sw=2 et
+
+local function get_ssh_hosts()
+  local hosts = {}
+  local ssh_config = vim.fn.expand '~/.ssh/config'
+
+  if vim.fn.filereadable(ssh_config) == 0 then
+    return hosts
+  end
+
+  for line in io.lines(ssh_config) do
+    -- Match lines starting with 'Host' but ignore wildcards like '*'
+    local host = line:match '^Host%s+(%S+)'
+    if host and host ~= '*' then
+      table.insert(hosts, host)
+    end
+  end
+  return hosts
+end
+
+local function open_clean_remote(host)
+  -- 1. Save current shortmess and set it to skip swap dialogs
+  local old_shortmess = vim.opt.shortmess:get()
+  vim.opt.shortmess:append 'A' -- 'A' ignores "Swap file already exists"
+
+  -- 2. Clean up existing buffers
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name:match '^scp://' then
+      vim.cmd('bwipeout! ' .. bufnr)
+    end
+  end
+
+  -- 3. Open the remote path
+  local path = string.format('scp://%s//home/root/', host)
+
+  -- We use pcall (protected call) to catch any remaining 'interrupt' errors
+  pcall(function()
+    vim.cmd('edit ' .. path)
+  end)
+
+  -- 4. Restore your original shortmess settings
+  vim.opt.shortmess = old_shortmess
+end
+-- Retrieve hosts and create bindings
+local all_hosts = get_ssh_hosts()
+
+for i = 1, math.min(#all_hosts, 9) do
+  local host = all_hosts[i]
+  vim.keymap.set('n', '<leader>o' .. i, function()
+    open_clean_remote(host)
+  end, { desc = 'SSH to ' .. host .. ' and clean sessions' })
+end

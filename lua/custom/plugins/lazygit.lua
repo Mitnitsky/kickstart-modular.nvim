@@ -17,4 +17,7 @@ return {
   keys = {
     { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
   },
+  init = function()
+    vim.g.lazygit_use_neovim_remote = 0 -- fallback to 0 if neovim-remote is not installed
+  end,
 }

@@ -29,6 +29,9 @@ return {
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
     },
+    opts = {
+      autoformat = false,
+    },
     config = function()
       -- Brief aside: **What is LSP?**
       --
@@ -237,6 +240,7 @@ return {
             '--completion-style=detailed',
             '--function-arg-placeholders',
             '--fallback-style=llvm',
+            '--clang-tidy-checks=-*,readability-*,modernize-*,readability-identifier-naming-*',
           },
           init_options = {
             usePlaceholders = true,
