@@ -133,7 +133,7 @@ vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>')
 vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
 vim.keymap.set({ 'n' }, '<leader>ts', function()
-  require('lsp_signature').toggle_float_win()
+  vim.lsp.buf.signature_help()
 end, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
 vim.keymap.set('n', ',m', function()
   vim.cmd ':%s/\r//g'
