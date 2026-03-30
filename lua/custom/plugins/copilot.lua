@@ -4,6 +4,10 @@ return {
   event = 'InsertEnter',
   config = function()
     require('copilot').setup {
+      server = {
+        type = 'binary',
+        custom_server_filepath = 'copilot-language-server',
+      },
       suggestion = {
         enabled = true,
         auto_trigger = true,
@@ -13,15 +17,12 @@ return {
         keymap = {
           accept = '<M-a>',
           accept_word = false,
-
           accept_line = false,
-
           next = '<M-n>',
           prev = '<M-p>',
           dismiss = '<M-d>',
         },
       },
-
       workspace_folders = {
         '/home/vmitnitsky/dev/dpdk/drivers/net/msft_smartnic/',
       },

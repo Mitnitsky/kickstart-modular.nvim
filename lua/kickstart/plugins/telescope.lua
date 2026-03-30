@@ -102,6 +102,7 @@ return {
           vim.cmd 'echo "" | redraw | echo ""' -- Clear the command line prompt
         end
       end, { desc = '[S]earch current [W]ord in specified directory' })
+      vim.keymap.set('n', '<leader>sS', builtin.lsp_document_symbols, { desc = '[S]earch current document symbols' })
 
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
