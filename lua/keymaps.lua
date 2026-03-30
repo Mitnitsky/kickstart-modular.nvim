@@ -124,6 +124,26 @@ vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>', { desc = '[E]di
 vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
 vim.keymap.set('n', '<leader>ts', vim.lsp.buf.signature_help, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
+vim.keymap.set('n', '<leader>tw', function()
+  vim.wo.wrap = not vim.wo.wrap
+  vim.notify('wrap: ' .. tostring(vim.wo.wrap))
+end, { desc = '[T]oggle [W]rap lines' })
+
+vim.keymap.set('n', '<leader>td', function()
+  local cfg = vim.diagnostic.config()
+  if cfg.virtual_lines then
+    -- Switch back to inline virtual text
+    vim.diagnostic.config { virtual_lines = false, virtual_text = {
+      source = 'if_many', spacing = 2,
+      format = function(d) return d.message end,
+    }}
+    vim.notify 'diagnostics: inline'
+  else
+    -- Switch to virtual lines (full-width, below code)
+    vim.diagnostic.config { virtual_lines = { current_line = true }, virtual_text = false }
+    vim.notify 'diagnostics: full line'
+  end
+end, { desc = '[T]oggle [D]iagnostic display mode' })
 vim.keymap.set('n', ',m', function()
   vim.cmd ':%s/\r//g'
 end)

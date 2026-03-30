@@ -254,6 +254,23 @@ function M.upload(ip)
   open_terminal_split(cmd, M.config.split_type)
 end
 
+function M.clean(clean_dpdk)
+  local cwd = get_cwd()
+  local clean_script = cwd .. '/clean_build_folder.sh'
+
+  if not file_exists(clean_script) then
+    vim.notify('No clean_build_folder.sh script found in ' .. cwd, vim.log.levels.ERROR)
+    return
+  end
+
+  local cmd = 'cd ' .. cwd .. ' && ./clean_build_folder.sh'
+  if clean_dpdk then
+    cmd = cmd .. ' --clean-dpdk'
+  end
+  cmd = cmd .. '; echo "--- Finished. Press <Enter> to close ---"; read'
+  open_terminal_split(cmd, M.config.split_type)
+end
+
 -- Initialize with defaults
 M.setup {
   split_type = 'buffer',
@@ -280,6 +297,14 @@ end, { desc = '[B]uild project' })
 vim.keymap.set('n', '<leader>pu', function()
   M.upload()
 end, { desc = '[U]pload binaries' })
+
+vim.keymap.set('n', '<leader>pc', function()
+  M.clean(false)
+end, { desc = '[C]lean build folder' })
+
+vim.keymap.set('n', '<leader>pC', function()
+  M.clean(true)
+end, { desc = '[C]lean build folder + dpdk' })
 
 vim.keymap.set({ 'n', 't' }, '<leader>gf', function()
   if vim.fn.mode() == 't' then

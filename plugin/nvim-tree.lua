@@ -20,8 +20,16 @@ local function on_attach(bufnr)
   end
 
   vim.keymap.set('n', '<leader>te', safe_toggle, { desc = '[T]oggle file [E]xplorer' })
+  vim.keymap.set('n', '<leader>tf', function()
+    require('nvim-tree.api').tree.find_file { open = true, focus = true }
+  end, { desc = '[T]oggle [F]ind file in tree' })
   vim.keymap.set('n', '<C-t>', api.tree.change_root_to_parent, opts 'Up')
   vim.keymap.set('n', '?', api.tree.toggle_help, opts 'Help')
 end
 
-require('nvim-tree').setup { on_attach = on_attach }
+require('nvim-tree').setup {
+  on_attach = on_attach,
+  view = {
+    width = 40,
+  },
+}
