@@ -1,16 +1,9 @@
 -- [[ Setting options ]]
 -- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-vim.opt.termguicolors = true
--- Make line numbers default
-vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+-- Relative line numbers (absolute number is default since 0.10)
+vim.opt.relativenumber = true
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -25,14 +18,15 @@ end)
 
 -- Enable break indent
 vim.opt.breakindent = true
-vim.cmd [[function! IndentWithI()
-    if len(getline('.')) == 0
-        return "\"_cc"
-    else
-        return "i"
-    endif
-endfunction
-nnoremap <expr> i IndentWithI()]]
+
+-- Auto-indent on empty lines when pressing i
+vim.keymap.set('n', 'i', function()
+  if vim.fn.getline('.') == '' then
+    return '"_cc'
+  end
+  return 'i'
+end, { expr = true, noremap = true })
+
 -- Save undo history
 vim.opt.undofile = true
 
@@ -54,8 +48,7 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
+--  See `:help 'list'`  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
@@ -68,29 +61,24 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
--- instead raise a dialog asking if you wish to save the current file(s)
--- See `:help 'confirm'`
+-- Raise a dialog instead of failing on unsaved changes
 vim.opt.confirm = true
 
--- vim: ts=2 sts=2 sw=2 et
-
+-- Nerd Font is available
 vim.g.have_nerd_font = true
 
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 1
-vim.g.netrw_winsize = 25
+-- Disable netrw (using nvim-tree instead)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Indentation
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
-vim.opt.wrap = false
-
 vim.opt.smartindent = true
 
--- disable netrw at the very start of your init.lua
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
+-- Don't wrap lines
+vim.opt.wrap = false
 
--- optionally enable 24-bit colour
-vim.opt.termguicolors = true
+-- vim: ts=2 sts=2 sw=2 et

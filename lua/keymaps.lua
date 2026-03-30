@@ -6,8 +6,6 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
--- ...existing code...
--- ...existing code...
 vim.keymap.set('n', '<Leader>tq', function()
   -- Check if quickfix window is already open
   local qf_open = false
@@ -91,50 +89,41 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
 table.unpack = table.unpack or unpack
-function GetVisual()
+local function get_visual()
   local _, ls, cs = table.unpack(vim.fn.getpos 'v')
   local _, le, ce = table.unpack(vim.fn.getpos '.')
-
-  -- normalize backward selection
   if ls > le or (ls == le and cs > ce) then
     ls, le = le, ls
     cs, ce = ce, cs
   end
-
   return vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
 end
+
 vim.keymap.set('v', '<C-r>', function()
-  local pattern = table.concat(GetVisual())
-  -- escape regex and line endings
+  local pattern = table.concat(get_visual())
   pattern = vim.fn.substitute(vim.fn.escape(pattern, '^$.*\\/~[]'), '\n', '\\n', 'g')
-  -- send parsed substitution command to command line
   vim.api.nvim_input('<Esc>:%s/' .. pattern .. '//<Left>')
 end)
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 vim.keymap.set('n', 'J', 'mzJ`z')
 vim.keymap.set('x', '<leader>p', [["_dP]])
--- next greatest remap ever : asbjornHaland
 vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
 vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('n', '<leader>k', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zz')
--- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
--- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
--- vim.keymap.set('n', '<leader>r', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set('n', '<leader>tx', '<cmd>!chmod +x %<CR>', { desc = '[T]oggle the current file executable', silent = true })
-vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>')
+vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>', { desc = '[E]dit [D]ot [F]iles' })
 vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
-vim.keymap.set({ 'n' }, '<leader>ts', function()
-  vim.lsp.buf.signature_help()
-end, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
+vim.keymap.set('n', '<leader>ts', vim.lsp.buf.signature_help, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
 vim.keymap.set('n', ',m', function()
   vim.cmd ':%s/\r//g'
 end)
@@ -226,21 +215,7 @@ end, { desc = '[L]og trim [3] brackets from buffer', noremap = true, silent = tr
 -- vim: ts=2 sts=2 sw=2 et
 
 local function get_ssh_hosts()
-  local hosts = {}
-  local ssh_config = vim.fn.expand '~/.ssh/config'
-
-  if vim.fn.filereadable(ssh_config) == 0 then
-    return hosts
-  end
-
-  for line in io.lines(ssh_config) do
-    -- Match lines starting with 'Host' but ignore wildcards like '*'
-    local host = line:match '^Host%s+(%S+)'
-    if host and host ~= '*' then
-      table.insert(hosts, host)
-    end
-  end
-  return hosts
+  return require('utils').get_ssh_hosts()
 end
 
 local function open_clean_remote(host)

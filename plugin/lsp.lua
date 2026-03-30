@@ -24,11 +24,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
     map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
     map('<leader>T', require('telescope.builtin').lsp_type_definitions, '[T]ype Definition')
-    map('<leader>Ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-    map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-    map('<leader>crn', vim.lsp.buf.rename, '[C]ode [R]e[n]ame')
-    map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
-    map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
