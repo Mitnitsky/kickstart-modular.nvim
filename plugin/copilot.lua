@@ -1,8 +1,13 @@
-require('copilot').setup {
-  server = {
+local copilot_server = {}
+if vim.fn.has 'unix' == 1 then
+  copilot_server = {
     type = 'binary',
     custom_server_filepath = 'copilot-language-server',
-  },
+  }
+end
+
+require('copilot').setup {
+  server = copilot_server,
   suggestion = {
     enabled = true,
     auto_trigger = true,
