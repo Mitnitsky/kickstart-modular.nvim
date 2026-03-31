@@ -19,7 +19,7 @@ require('copilot').setup {
     },
   },
   workspace_folders = {
-    '/home/vmitnitsky/dev/dpdk/drivers/net/msft_smartnic/',
+    vim.fn.expand '~/dev/dpdk/drivers/net/msft_smartnic/',
   },
   panel = { enabled = false },
 }

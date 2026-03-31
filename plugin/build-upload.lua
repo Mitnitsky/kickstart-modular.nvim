@@ -1,5 +1,9 @@
--- Build and Upload Plugin for Neovim
+-- Build and Upload Plugin for Neovim (Linux only)
 -- Provides commands to build and upload binaries with configurable split types
+
+if vim.fn.has 'win32' == 1 then
+  return
+end
 
 local M = {}
 
@@ -23,7 +27,16 @@ local function file_exists(path)
   return vim.fn.filereadable(path) == 1
 end
 
+local function wipe_old_terminal_buffers()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[bufnr].buftype == 'terminal' then
+      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+    end
+  end
+end
+
 local function open_terminal_split(cmd, split_type)
+  wipe_old_terminal_buffers()
   local win_height = vim.o.lines
   local win_width = vim.o.columns
 

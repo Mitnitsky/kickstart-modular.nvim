@@ -119,8 +119,12 @@ vim.keymap.set('n', '<leader>Y', [["+Y]])
 vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('n', '<leader>k', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<leader>tx', '<cmd>!chmod +x %<CR>', { desc = '[T]oggle the current file executable', silent = true })
-vim.keymap.set('n', '<leader>edf', '<cmd>e ~/.config/nvim/<CR>', { desc = '[E]dit [D]ot [F]iles' })
+if vim.fn.has 'unix' == 1 then
+  vim.keymap.set('n', '<leader>tx', '<cmd>!chmod +x %<CR>', { desc = '[T]oggle the current file executable', silent = true })
+end
+vim.keymap.set('n', '<leader>edf', function()
+  vim.cmd('e ' .. vim.fn.stdpath 'config')
+end, { desc = '[E]dit [D]ot [F]iles' })
 vim.keymap.set('n', ';', ':', { desc = 'CMD enter command mode' })
 vim.keymap.set('i', 'jk', '<ESC>')
 vim.keymap.set('n', '<leader>ts', vim.lsp.buf.signature_help, { silent = true, noremap = true, desc = '[T]oggle [S]ignature' })
@@ -234,40 +238,36 @@ end, { desc = '[L]og trim [3] brackets from buffer', noremap = true, silent = tr
 
 -- vim: ts=2 sts=2 sw=2 et
 
-local function get_ssh_hosts()
-  return require('utils').get_ssh_hosts()
-end
-
-local function open_clean_remote(host)
-  -- 1. Save current shortmess and set it to skip swap dialogs
-  local old_shortmess = vim.opt.shortmess:get()
-  vim.opt.shortmess:append 'A' -- 'A' ignores "Swap file already exists"
-
-  -- 2. Clean up existing buffers
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local name = vim.api.nvim_buf_get_name(bufnr)
-    if name:match '^scp://' then
-      vim.cmd('bwipeout! ' .. bufnr)
-    end
+-- SSH remote editing (Unix only)
+if vim.fn.has 'unix' == 1 then
+  local function get_ssh_hosts()
+    return require('utils').get_ssh_hosts()
   end
 
-  -- 3. Open the remote path
-  local path = string.format('scp://%s//home/root/', host)
+  local function open_clean_remote(host)
+    local old_shortmess = vim.opt.shortmess:get()
+    vim.opt.shortmess:append 'A'
 
-  -- We use pcall (protected call) to catch any remaining 'interrupt' errors
-  pcall(function()
-    vim.cmd('edit ' .. path)
-  end)
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      local name = vim.api.nvim_buf_get_name(bufnr)
+      if name:match '^scp://' then
+        vim.cmd('bwipeout! ' .. bufnr)
+      end
+    end
 
-  -- 4. Restore your original shortmess settings
-  vim.opt.shortmess = old_shortmess
-end
--- Retrieve hosts and create bindings
-local all_hosts = get_ssh_hosts()
+    local path = string.format('scp://%s//home/root/', host)
+    pcall(function()
+      vim.cmd('edit ' .. path)
+    end)
 
-for i = 1, math.min(#all_hosts, 9) do
-  local host = all_hosts[i]
-  vim.keymap.set('n', '<leader>o' .. i, function()
-    open_clean_remote(host)
-  end, { desc = 'SSH to ' .. host .. ' and clean sessions' })
+    vim.opt.shortmess = old_shortmess
+  end
+
+  local all_hosts = get_ssh_hosts()
+  for i = 1, math.min(#all_hosts, 9) do
+    local host = all_hosts[i]
+    vim.keymap.set('n', '<leader>o' .. i, function()
+      open_clean_remote(host)
+    end, { desc = 'SSH to ' .. host .. ' and clean sessions' })
+  end
 end

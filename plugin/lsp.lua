@@ -84,7 +84,11 @@ vim.diagnostic.config {
 }
 
 -- Enable LSP servers (configs from lsp/ directory)
-vim.lsp.enable { 'clangd', 'bashls', 'lua_ls' }
+local lsp_servers = { 'lua_ls' }
+if vim.fn.has 'unix' == 1 then
+  vim.list_extend(lsp_servers, { 'clangd', 'bashls' })
+end
+vim.lsp.enable(lsp_servers)
 -- vim.lsp.enable { 'ccls' }  -- disabled: use clangd instead; config kept in lsp/ccls.lua
 
 -- Mason & Fidget
