@@ -54,7 +54,7 @@ require('sidekick').setup {
       },
     },
     mux = {
-      backend = vim.fn.has 'win32' == 1 and 'terminal' or (vim.env.ZELLIJ and 'zellij' or 'tmux'),
+      backend = vim.env.ZELLIJ and 'zellij' or 'tmux',
       enabled = vim.fn.has 'unix' == 1,
       create = 'terminal',
       split = { vertical = true, size = 0.5 },
