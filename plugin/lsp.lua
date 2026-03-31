@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
     end
 
-    map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
+    -- grn (rename) and gra (code_action) are Neovim 0.11+ built-in defaults
     map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
     map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
     map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
@@ -56,6 +56,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- Make LSP reference highlights more visible
+vim.api.nvim_set_hl(0, 'LspReferenceText', { underline = true })
+vim.api.nvim_set_hl(0, 'LspReferenceRead', { underline = true })
+vim.api.nvim_set_hl(0, 'LspReferenceWrite', { underline = true, bold = true })
+
 -- Diagnostics
 vim.diagnostic.config {
   severity_sort = true,
@@ -79,7 +84,8 @@ vim.diagnostic.config {
 }
 
 -- Enable LSP servers (configs from lsp/ directory)
-vim.lsp.enable { 'clangd', 'bashls', 'lua_ls', 'ccls' }
+vim.lsp.enable { 'clangd', 'bashls', 'lua_ls' }
+-- vim.lsp.enable { 'ccls' }  -- disabled: use clangd instead; config kept in lsp/ccls.lua
 
 -- Mason & Fidget
 require('mason').setup {}

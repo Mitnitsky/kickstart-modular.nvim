@@ -81,4 +81,23 @@ vim.opt.smartindent = true
 -- Don't wrap lines
 vim.opt.wrap = false
 
+-- Auto-reload files changed on disk (e.g. by Copilot sidekick)
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd('FileChangedShell', {
+  desc = 'Handle external file changes: reload clean buffers, keep local edits in dirty ones',
+  callback = function()
+    if vim.bo.modified then
+      vim.v.fcs_choice = '' -- silently ignore, keep local edits
+    else
+      vim.v.fcs_choice = 'reload'
+    end
+  end,
+})
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold' }, {
+  desc = 'Check for external file changes',
+  callback = function()
+    vim.cmd 'silent! checktime'
+  end,
+})
+
 -- vim: ts=2 sts=2 sw=2 et

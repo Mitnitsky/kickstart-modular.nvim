@@ -69,6 +69,7 @@ vim.pack.add {
   -- Themes
   'https://github.com/xiantang/darcula-dark.nvim',
   'https://github.com/catppuccin/nvim',
+  'https://github.com/Mofiqul/vscode.nvim',
 
   -- Git
   'https://github.com/kdheepak/lazygit.nvim',

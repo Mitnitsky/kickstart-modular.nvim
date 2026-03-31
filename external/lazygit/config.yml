@@ -1,0 +1,11 @@
+gui:
+  showIcons: true
+  nerdFontsVersion: "3"
+  theme:
+    selectedLineBgColor:
+      - reverse
+os:
+  edit: '~/.config/lazygit/edit-in-nvim.sh "{{filename}}"'
+  editAtLine: '~/.config/lazygit/edit-in-nvim.sh "{{filename}}" "{{line}}"'
+  editAtLineAndWait: '~/.config/lazygit/edit-in-nvim.sh "{{filename}}" "{{line}}"'
+  editInTerminal: true

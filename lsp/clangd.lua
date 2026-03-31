@@ -7,7 +7,7 @@ return {
     '--completion-style=detailed',
     '--function-arg-placeholders',
     '--fallback-style=llvm',
-    '--clang-tidy-checks=-*,readability-*,modernize-*,readability-identifier-naming-*',
+    '--clang-tidy-checks=-*,readability-*,modernize-*,readability-identifier-naming-*,-readability-identifier-length',
   },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', '.git' },
